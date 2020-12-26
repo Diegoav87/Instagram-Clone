@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="profile-container">
+    <div>
+        <img class="big-profile-pic" src="{{target_user.profile.profile_picture.url}}">
+    </div>
+    <div class="info-profile">
+        <div class="d-flex profile-info-block">
+            <h4 class="username">{{target_user.username}}</h4>
+            {% if user == target_user %}
+                <a href="{% url 'accounts:edit_profile' username=user.username %}" class="btn btn-primary">Edit Profile</a>
+                <a href="{% url 'accounts:logout' %}" class="btn ml-3 btn-secondary">Log Out</a>
+            {% else %}
+                {% if followed == True %}
+                    <a href="{% url 'accounts:unfollow' username=target_user.username %}" class="btn btn-primary">Unfollow</a>
+                {% else %}
+                    <a href="{% url 'accounts:follow' username=target_user.username %}" class="btn btn-primary">Follow</a>
+                {% endif %}
+
+            {% endif %}
+        </div>
+        <div class="d-flex profile-info-block">
+            <p><strong>{{target_user.followers.count}}</strong> followers</p>
+            <p><strong>{{target_user.followed_users.count}}</strong> followed</p>
+        </div>
+        <div class="profile-info-block">
+            <p>{{target_user.profile.bio}}</p>
+        </div>
+    </div>
+</div>
+<div class="user-post-list">
+    {% for post in target_user.posts.all %}
+        <div class="post-grid-block">
+            <a href="{% url 'posts:post_detail' pk=post.pk %}"><img class="post-pic" src="{{post.image.url}}"></a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
